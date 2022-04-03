@@ -1,7 +1,7 @@
 // ==UserScript==
  // @name         r/place Philippines tile-placement automation tool
  // @namespace    http://tampermonkey.net/
- // @version      1.0
+ // @version      1.0.0
  // @description  place philippines tile-placement automation tool
  // @author       Thanks Jared. (Forked by u/tjmora)
  // @match        https://hot-potato.reddit.com/embed*
