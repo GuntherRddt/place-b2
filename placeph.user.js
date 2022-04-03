@@ -5,8 +5,8 @@
  // @description  place philippines tile-placement automation tool
  // @author       Thanks Jared. (Forked by u/tjmora)
  // @match        https://hot-potato.reddit.com/embed*
- // @updateURL    https://gist.github.com/xsorifc28/e6529558e4b41a9712bac70220b3c2de/raw/placetesla.user.js
- // @downloadURL  https://gist.github.com/xsorifc28/e6529558e4b41a9712bac70220b3c2de/raw/placetesla.user.js
+ // @updateURL    https://gist.githubusercontent.com/tjmora/ef588f8af011cbb30afb5dd419f3ab4f/raw/5f05caf021cd4274c9ebb73c31ca076d37241cfe/placeph.user.js
+ // @downloadURL  https://gist.githubusercontent.com/tjmora/ef588f8af011cbb30afb5dd419f3ab4f/raw/5f05caf021cd4274c9ebb73c31ca076d37241cfe/placeph.user.js
  // @grant        GM_xmlhttpRequest
  // @connect      raw.githubusercontent.com
  // ==/UserScript==
@@ -83,7 +83,7 @@
         ];
 
         let newDiv = document.createElement('div');
-        newDiv.innerHTML = "bot v4.0 <a target='_blank' href='https://gist.github.com/xsorifc28/e6529558e4b41a9712bac70220b3c2de'>click here</a> and click \"raw\" to update bot. please update bot every hour!";
+        newDiv.innerHTML = "bot v4.0 <a target='_blank' href='https://gist.github.com/tjmora/ef588f8af011cbb30afb5dd419f3ab4f'>click here</a> and click \"raw\" to update bot. please update bot every hour!";
         document.body.prepend(newDiv);
         newDiv.style.position = "absolute";
         newDiv.style.backgroundColor = "red";
