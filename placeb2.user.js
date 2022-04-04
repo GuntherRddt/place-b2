@@ -30,8 +30,6 @@
             [283, 715, 27],
             [284, 715, 27]
         ];
-        // shuffle template, so placement is randomized (try to avoid concurrent placements)
-        shuffleArray(template);
 
         let newDiv = document.createElement('div');
         newDiv.innerHTML = "B2 bot activated, placed pixels might not update on your canvas.";
@@ -48,6 +46,8 @@
         setTimeout(async () => {
 
             while(true) {
+                // shuffle template, so placement is randomized (try to avoid concurrent placements with other users)
+                shuffleArray(template);
                 for (const target of template)
                 {
                     //console.log("Checking target: ", target);
