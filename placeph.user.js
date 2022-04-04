@@ -32,16 +32,25 @@
         ];
         // shuffle template, so placement is randomized (try to avoid concurrent placements)
         shuffleArray(template);
-        N = template.length;
 
-        let xEnd = xStart + location1_template[0].length - 1;
-        let yEnd = yStart + location1_template.length - 1;
+        let newDiv = document.createElement('div');
+        newDiv.innerHTML = "B2 bot activated, placed pixels might not update on your canvas.";
+        document.body.prepend(newDiv);
+        newDiv.style.position = "absolute";
+        newDiv.style.backgroundColor = "red";
+        newDiv.style.width = "10%";
+        newDiv.style.height = "10%";
+        newDiv.style.color = "white";
+        newDiv.style["z-index"] = "9999";
 
+
+        console.log("Template: ", template);
         setTimeout(async () => {
 
             while(true) {
                 for (const target of template)
                 {
+                    //console.log("Checking target: ", target);
                     var x = target[0]
                     var y = target[1]
                     var color_idx = target[2]
@@ -56,8 +65,8 @@
                         break;
                     }
                     else {
-                        console.log('skipping', x, y);
-                        await sleep(150);  // avoid high cpu when all pixels are correct
+                        //console.log('skipping', x, y);
+                        await sleep(150); // avoid high cpu when all pixels are correct
                     }
                 }
             }
@@ -91,6 +100,19 @@
         "#FFFFFF": 31, // white
     };
 
+    const isReadyInterval = setInterval(() => {
+        const theCanvas = document
+            .querySelector("mona-lisa-embed")
+            ?.shadowRoot?.querySelector("mona-lisa-camera")
+            ?.querySelector("mona-lisa-canvas")
+            ?.shadowRoot?.querySelector("canvas");
+
+        if (theCanvas && document.querySelector("mona-lisa-embed")?.shadowRoot?.querySelector("mona-lisa-overlay")?.shadowRoot.children.length === 0) {
+            clearInterval(isReadyInterval);
+            runScript(theCanvas);
+        }
+    }, 500);
+
     function getPlaceApi(theCanvas) {
         const context = theCanvas.getContext("2d");
 
@@ -121,13 +143,14 @@
     }
 
     function sleep(ms) {
+        //console.log("Sleep for ", ms);
         return new Promise((response) => setTimeout(response, ms));
     }
 
     function rgbToHex(r, g, b) {
         return `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`.toUpperCase();
     }
-    
+
     function shuffleArray(array) {
         // Randomize array in-place using Durstenfeld shuffle algorithm.
         for (var ii = array.length - 1; ii > 0; ii--) {
@@ -136,6 +159,40 @@
             array[ii] = array[jj];
             array[jj] = temp;
         }
+    }
+
+
+    function GM_fetch(url, opt){
+        function blobTo(to, blob) {
+            if (to == "arrayBuffer" && blob.arrayBuffer) return blob.arrayBuffer()
+            return new Promise((resolve, reject) => {
+                var fileReader = new FileReader()
+                fileReader.onload = function (event) { if (to == "base64") resolve(event.target.result); else resolve(event.target.result) }
+                if (to == "arrayBuffer") fileReader.readAsArrayBuffer(blob)
+                else if (to == "base64") fileReader.readAsDataURL(blob) // "data:*/*;base64,......"
+                else if (to == "text") fileReader.readAsText(blob, "utf-8")
+                else reject("unknown to")
+            })
+        }
+        return new Promise((resolve, reject)=>{
+            // https://www.tampermonkey.net/documentation.php?ext=dhdg#GM_xmlhttpRequest
+            opt = opt || {}
+            opt.url = url
+            opt.data = opt.body
+            opt.responseType = "blob"
+            opt.onload = (resp)=>{
+                var blob = resp.response
+                resp.blob = ()=>Promise.resolve(blob)
+                resp.arrayBuffer = ()=>blobTo("arrayBuffer", blob)
+                resp.text = ()=>blobTo("text", blob)
+                resp.json = async ()=>JSON.parse(await blobTo("text", blob))
+                resolve(resp)
+            }
+            opt.ontimeout = ()=>reject("fetch timeout")
+            opt.onerror = ()=>reject("fetch error")
+            opt.onabort = ()=>reject("fetch abort")
+            GM_xmlhttpRequest(opt)
+        })
     }
 
 })();
